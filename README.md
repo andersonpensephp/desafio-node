@@ -9,6 +9,7 @@ Crud de tarefas e importação de arquivo csv.
   git clone https://github.com/andersonpensephp/desafio-node.git
   cd desafio-node
   npm i 
+  copy file .env.default file to .env
   npm run dev
 ```
 
