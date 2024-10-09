@@ -1,5 +1,8 @@
 import http from 'node:http'
 import { routes } from './routes.js'
+import { extractQuery } from './utils/extract-query.js'
+
+const PORT = process.env.PORT
 
 const server = http.createServer(async (req, res) => {
   const buffers = []
@@ -16,12 +19,18 @@ const server = http.createServer(async (req, res) => {
 
   res.setHeader('content-type', 'json/application')
 
-  const route = routes.find(route => route.method === req.method)
-
+  const route = routes.find(route => route.method === req.method && route.path.test(req.url))
+  
   if (route) {
+    const routeParams = req.url.match(route.path)
+    const { query } = routeParams.groups
+    const routeQuery = extractQuery(query)
+    
+    req.params = {...routeParams.groups}
+    req.query = routeQuery
     route.handle(req, res)
   }
 
 })
 
-server.listen(3001)
+server.listen(PORT)
